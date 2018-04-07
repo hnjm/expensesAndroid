@@ -13,19 +13,30 @@ import com.example.pavel.expenses.R
 
 class ExpenseAdapter(val context: Context, val expenses: List<Expense>) : BaseAdapter() {
     @SuppressLint("SetTextI18n")
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val expenseView: View
 
-        expenseView = LayoutInflater.from(context).inflate(R.layout.expense_list_item, null)
+        val Holder: ViewHolder
 
-        val expenseName: CheckBox = expenseView.findViewById(R.id.expenseCheckbox)
-        val expenseAmount: EditText = expenseView.findViewById(R.id.amount)
+
+        if (convertView == null) {
+            expenseView = LayoutInflater.from(context).inflate(R.layout.expense_list_item, null)
+
+            Holder = ViewHolder()
+            Holder.name = expenseView.findViewById(R.id.expenseCheckbox)
+            Holder.amount = expenseView.findViewById(R.id.amount)
+
+            expenseView.tag = Holder
+        } else {
+            Holder = convertView.tag as ViewHolder
+            expenseView = convertView
+        }
 
         val expense = expenses[position]
 
-
-        expenseName.text = expense.name
-        expenseAmount.setText(expense.amount.toString() + " грн")
+        Holder.name?.text = expense.name
+        Holder.amount?.setText(expense.amount.toString() + " грн")
 
         return expenseView
     }
@@ -42,4 +53,9 @@ class ExpenseAdapter(val context: Context, val expenses: List<Expense>) : BaseAd
         return expenses.count()
     }
 
+    private class ViewHolder {
+        var name: CheckBox? = null
+        var amount: EditText? = null
+
+    }
 }
